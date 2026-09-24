@@ -169,6 +169,17 @@
         statusEl.className = `status ${type}`.trim();
       }
 
+      async function getResponseError(response, fallbackMessage) {
+        const body = await response.text();
+
+        try {
+          const errorData = JSON.parse(body);
+          return errorData.error || fallbackMessage;
+        } catch {
+          return `${fallbackMessage} (HTTP ${response.status}). Verifique os logs do Render.`;
+        }
+      }
+
       document.getElementById('imageForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -198,8 +209,7 @@
           });
 
           if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Erro ao converter imagem');
+            throw new Error(await getResponseError(response, 'Erro ao converter imagem'));
           }
 
           const blob = await response.blob();
@@ -239,8 +249,7 @@
           });
 
           if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Erro ao converter vídeo');
+            throw new Error(await getResponseError(response, 'Erro ao converter vídeo'));
           }
 
           const blob = await response.blob();
