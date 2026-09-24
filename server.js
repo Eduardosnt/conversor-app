@@ -114,16 +114,17 @@ app.post('/convert-video', upload.single('file'), (req, res) => {
 
     if (format === 'mp4') {
       conversion.videoCodec('libx264').audioCodec('aac').outputOptions(
-        '-preset', 'veryfast',
-        '-crf', '28',
+        '-preset', 'ultrafast',
+        '-tune', 'zerolatency',
+        '-crf', '30',
         '-movflags', '+faststart',
         '-b:a', '128k',
       );
     } else if (format === 'webm') {
-      conversion.videoCodec('libvpx-vp9').audioCodec('libopus').outputOptions(
+      conversion.videoCodec('libvpx').audioCodec('libopus').outputOptions(
         '-deadline', 'realtime',
-        '-cpu-used', '5',
-        '-crf', '35',
+        '-cpu-used', '8',
+        '-crf', '40',
         '-b:v', '0',
         '-b:a', '128k',
       );
