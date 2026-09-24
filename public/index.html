@@ -192,7 +192,7 @@
         setStatus('Convertendo imagem...');
 
         try {
-          const response = await fetch('http://localhost:3000/convert-image', {
+          const response = await fetch('/convert-image', {
             method: 'POST',
             body: formData,
           });
@@ -233,7 +233,7 @@
         setStatus('Convertendo vídeo...');
 
         try {
-          const response = await fetch('http://localhost:3000/convert-video', {
+          const response = await fetch('/convert-video', {
             method: 'POST',
             body: formData,
           });
