@@ -1,0 +1,13 @@
+node_modules/
+uploads/
+converted/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.avif
+*.mp4
+*.webm
+*.avi
+.env
+.DS_Store
