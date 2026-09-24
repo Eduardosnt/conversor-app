@@ -105,8 +105,33 @@ app.post('/convert-video', upload.single('file'), (req, res) => {
     const outputFile = `${Date.now()}-converted.${format}`;
     const outputPath = path.join(convertedDir, outputFile);
 
-    ffmpeg(inputPath)
+    const conversion = ffmpeg(inputPath)
       .outputFormat(format)
+      .outputOptions('-threads 0');
+
+    if (format === 'mp4') {
+      conversion.videoCodec('libx264').audioCodec('aac').outputOptions(
+        '-preset veryfast',
+        '-crf 28',
+        '-movflags +faststart',
+        '-b:a 128k',
+      );
+    } else if (format === 'webm') {
+      conversion.videoCodec('libvpx-vp9').audioCodec('libopus').outputOptions(
+        '-deadline realtime',
+        '-cpu-used 5',
+        '-crf 35',
+        '-b:v 0',
+        '-b:a 128k',
+      );
+    } else if (format === 'avi') {
+      conversion.videoCodec('mpeg4').audioCodec('mp3').outputOptions(
+        '-q:v 5',
+        '-b:a 128k',
+      );
+    }
+
+    conversion
       .on('end', () => {
         res.download(outputPath, outputFile, () => {
           removeIfExists(inputPath);
