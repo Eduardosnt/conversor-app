@@ -3,11 +3,14 @@ const cors = require('cors');
 const multer = require('multer');
 const sharp = require('sharp');
 const ffmpeg = require('fluent-ffmpeg');
+const ffmpegPath = require('ffmpeg-static');
 const fs = require('fs');
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 const uploadDir = path.join(__dirname, 'uploads');
 const convertedDir = path.join(__dirname, 'converted');
@@ -111,23 +114,23 @@ app.post('/convert-video', upload.single('file'), (req, res) => {
 
     if (format === 'mp4') {
       conversion.videoCodec('libx264').audioCodec('aac').outputOptions(
-        '-preset veryfast',
-        '-crf 28',
-        '-movflags +faststart',
-        '-b:a 128k',
+        '-preset', 'veryfast',
+        '-crf', '28',
+        '-movflags', '+faststart',
+        '-b:a', '128k',
       );
     } else if (format === 'webm') {
       conversion.videoCodec('libvpx-vp9').audioCodec('libopus').outputOptions(
-        '-deadline realtime',
-        '-cpu-used 5',
-        '-crf 35',
-        '-b:v 0',
-        '-b:a 128k',
+        '-deadline', 'realtime',
+        '-cpu-used', '5',
+        '-crf', '35',
+        '-b:v', '0',
+        '-b:a', '128k',
       );
     } else if (format === 'avi') {
       conversion.videoCodec('mpeg4').audioCodec('mp3').outputOptions(
-        '-q:v 5',
-        '-b:a 128k',
+        '-q:v', '5',
+        '-b:a', '128k',
       );
     }
 
